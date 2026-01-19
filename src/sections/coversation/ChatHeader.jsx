@@ -201,18 +201,20 @@ export const ProfileSettingsHeader = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch(logout());        // ✅ clears auth + token
-    dispatch(resetChat());     // ✅ clears chat state
-    dispatch(resetContacts()); // ✅ clears contacts
+    dispatch(logout());          // remove token
+    dispatch(resetAuth());       // clear auth state
+    dispatch(resetChat());       // clear chats/messages
+    dispatch(resetContacts());   // clear contacts/invites
 
     navigate("/login", { replace: true });
   };
 
   return (
     <header className="h-16 flex items-center justify-between px-4 md:px-6 bg-white border-b border-black/5 w-full flex-shrink-0">
+      
       <div className="flex items-center gap-3">
         {/* BACK BUTTON (Mobile Only) */}
-        <button
+        <button 
           onClick={() => navigate("/chat")}
           className="md:hidden p-1 -ml-2 text-[#74717a] hover:bg-gray-100 rounded-full"
         >
@@ -227,38 +229,40 @@ export const ProfileSettingsHeader = () => {
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <polyline points="15 18 9 12 15 6" />
+            <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
 
         <h1 className="text-lg font-bold text-[#141415]">Settings</h1>
-        <div className="hidden md:block h-4 w-px bg-gray-300 mx-2" />
+        <div className="hidden md:block h-4 w-px bg-gray-300 mx-2"></div>
         <p className="hidden md:block text-sm text-[#74717a]">
           {user?.displayName || "My Profile"}
         </p>
       </div>
 
-      <button
-        onClick={handleLogout}
-        className="flex items-center gap-2 px-4 py-2 text-[#ef4444] bg-red-50 hover:bg-red-100 rounded-full transition-colors text-sm font-semibold"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+      <div>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-4 py-2 text-[#ef4444] bg-red-50 hover:bg-red-100 rounded-full transition-colors text-sm font-semibold"
         >
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-          <polyline points="16 17 21 12 16 7" />
-          <line x1="21" y1="12" x2="9" y2="12" />
-        </svg>
-        <span>Logout</span>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Logout</span>
+        </button>
+      </div>
     </header>
   );
 };

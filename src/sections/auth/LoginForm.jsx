@@ -17,17 +17,10 @@ const LoginForm = () => {
         password: "",
     });
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-
-  dispatch(loginUser(form))
-    .then(() => {
-      navigate("/chat");
-    })
-    .catch(() => {
-      // optional: handle error
-    });
-};
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        dispatch(loginUser(form, navigate));
+    };
 
 
     return (

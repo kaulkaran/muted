@@ -8,7 +8,7 @@ const RegisterForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
+ 
   const loading = useSelector((state) => state.auth.loading);
   const error = useSelector((state) => state.auth.error);
 
@@ -18,18 +18,11 @@ const RegisterForm = () => {
     password: "",
   });
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-
-  dispatch(registerUser(form))
-    .then(() => {
-      navigate("/chat");
-    })
-    .catch(() => {
-      // optional
-    });
-};
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Dispatch thunk and pass navigate for redirect
+    dispatch(registerUser(form, navigate));
+  };
 
   return (
     // CARD CONTAINER: Matches LoginForm exactly
