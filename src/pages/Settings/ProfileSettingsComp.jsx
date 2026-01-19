@@ -64,7 +64,7 @@ const ProfileSettingsComp = () => {
           </label>
 
           <p className="text-xs text-[#74717a]">
-            JPG, PNG • Max size 2MB
+            JPG, PNG • Max size 15MB
           </p>
         </div>
       </div>
