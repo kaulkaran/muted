@@ -15,24 +15,37 @@ const authSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
+
     authSuccess(state, action) {
       state.loading = false;
       state.user = action.payload.user;
       state.token = action.payload.token;
     },
+
     authFailure(state, action) {
       state.loading = false;
       state.error = action.payload;
     },
+
     logout(state) {
       state.user = null;
       state.token = null;
       localStorage.removeItem("token");
     },
+
+    /* ✅ RESET */
+    resetAuth() {
+      return initialState;
+    },
   },
 });
 
-export const { authStart, authSuccess, authFailure, logout } =
-  authSlice.actions;
+export const {
+  authStart,
+  authSuccess,
+  authFailure,
+  logout,
+  resetAuth,
+} = authSlice.actions;
 
 export default authSlice.reducer;

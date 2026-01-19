@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { setActiveConversation } from "../../app/chat/chatSlice"; // Import Action
 import { useNavigate } from "react-router-dom"; // 1. Import useNavigate
 
-
+import { logout, resetAuth } from "../../app/auth/authSlice";
+import { resetChat } from "../../app/chat/chatSlice";
+import { resetContacts } from "../../app/contacts/contactsSlice";
 
 
 const Header = ({
@@ -195,11 +197,16 @@ export const ContactHeader = ({ onAddContact, onSearch }) => {
 // ----------------------------------------------------------------------
 export const ProfileSettingsHeader = () => {
   const user = useSelector((state) => state.auth.user);
-  const navigate = useNavigate(); // Initialize hook
-  
-  // Example logout logic
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const handleLogout = () => {
-    console.log("Logout clicked");
+    dispatch(logout());          // remove token
+    dispatch(resetAuth());       // clear auth state
+    dispatch(resetChat());       // clear chats/messages
+    dispatch(resetContacts());   // clear contacts/invites
+
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -211,7 +218,19 @@ export const ProfileSettingsHeader = () => {
           onClick={() => navigate("/chat")}
           className="md:hidden p-1 -ml-2 text-[#74717a] hover:bg-gray-100 rounded-full"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
         </button>
 
         <h1 className="text-lg font-bold text-[#141415]">Settings</h1>
@@ -226,11 +245,24 @@ export const ProfileSettingsHeader = () => {
           onClick={handleLogout}
           className="flex items-center gap-2 px-4 py-2 text-[#ef4444] bg-red-50 hover:bg-red-100 rounded-full transition-colors text-sm font-semibold"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
           <span>Logout</span>
         </button>
       </div>
-
     </header>
   );
 };
