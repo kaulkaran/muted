@@ -17,15 +17,17 @@ const LoginForm = () => {
         password: "",
     });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        dispatch(loginUser(form))
-            .unwrap()
-            .then(() => {
-                navigate("/chat");
-            });
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-    };
+  dispatch(loginUser(form))
+    .then(() => {
+      navigate("/chat");
+    })
+    .catch(() => {
+      // optional: handle error
+    });
+};
 
 
     return (

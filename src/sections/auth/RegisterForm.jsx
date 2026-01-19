@@ -18,16 +18,18 @@ const RegisterForm = () => {
     password: "",
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Dispatch thunk and pass navigate for redirect
-    dispatch(registerUser(form))
-      .unwrap()
-      .then(() => {
-        navigate("/chat");
-      });
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-  };
+  dispatch(registerUser(form))
+    .then(() => {
+      navigate("/chat");
+    })
+    .catch(() => {
+      // optional
+    });
+};
+
 
   return (
     // CARD CONTAINER: Matches LoginForm exactly
