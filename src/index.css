@@ -1,0 +1,95 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap");
+
+@import "tailwindcss";
+
+
+
+
+/* --------------------------------------------------
+   DESIGN TOKENS
+-------------------------------------------------- */
+
+:root {
+  --primary: 130 112 143;
+  --bg-light: 246 245 244;
+  --bg-dark: 44 44 53;
+  --text-light: 20 20 21;
+  --text-dark: 242 242 243;
+  --radius: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* --------------------------------------------------
+   GLOBAL BASE STYLES
+-------------------------------------------------- */
+
+body {
+  @apply transition-colors duration-300 font-sans;
+  background-color: rgb(var(--bg-light));
+  color: rgb(var(--text-light));
+}
+
+body {
+  font-family: "Manrope", sans-serif;
+}
+
+.dark body {
+  background-color: rgb(var(--bg-dark));
+  color: rgb(var(--text-dark));
+}
+
+/* text selection */
+::selection {
+  background-color: rgb(var(--primary) / 0.2);
+}
+
+/* --------------------------------------------------
+   UTILITIES
+-------------------------------------------------- */
+
+.soft-shadow {
+  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.04);
+}
+
+/* Hero background gradient */
+.hero-gradient {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(130, 112, 143, 0.08) 0%,
+    rgba(246, 245, 244, 0) 70%
+  );
+}
+
+.dark .hero-gradient {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(130, 112, 143, 0.15) 0%,
+    rgba(44, 44, 53, 0) 70%
+  );
+}
+
+
+
+
+
+
+/* --------------------------------------------------
+   MATERIAL ICONS FIX
+-------------------------------------------------- */
+
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 500,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+img {
+  @apply select-none;
+}
