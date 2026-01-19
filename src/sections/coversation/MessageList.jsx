@@ -5,19 +5,24 @@ import { useRef, useEffect } from "react";
 const MessageList = ({ messages = [] }) => {
   const bottomRef = useRef(null);
 
-  const currentUserId = useSelector(state => state.auth.user?._id);
-  const currentUserAvatar = useSelector(
-    state => state.auth.user?.avatar
-  );
+  const currentUserId = useSelector((state) => state.auth.user?._id);
 
-  // 🔥 Auto-scroll on new messages
+  // Auto-scroll on new messages
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
-    // ✅ FIXED: Added min-h-full to make white background fill entire space
-    <div className="p-6 md:p-8 bg-white min-h-full flex flex-col">
+    // TRANSPARENT BACKGROUND (Parent handles the beige color)
+    <div className="flex flex-col py-2 min-h-full">
+      
+      {/* Date Divider (Optional stylistic touch) */}
+      <div className="flex justify-center mb-4 mt-2">
+         <span className="bg-[#fff] dark:bg-[#111b21] shadow-sm text-[#54656f] dark:text-[#8696a0] text-[12.5px] px-3 py-1.5 rounded-lg">
+            Today
+         </span>
+      </div>
+
       {messages.map((msg) => {
         const senderId =
           typeof msg.sender === "string"
@@ -32,19 +37,12 @@ const MessageList = ({ messages = [] }) => {
             text={msg.text}
             time={msg.createdAt}
             isSender={isSender}
-            hasAvatar={!isSender}
-            avatarUrl={
-              isSender
-                ? currentUserAvatar
-                : msg.sender?.avatar
-            }
+            status="read" // You can pass dynamic status here later
           />
         );
       })}
 
       <div ref={bottomRef} />
-      {/* ✅ Spacer to push content when needed */}
-      <div className="flex-1" />
     </div>
   );
 };

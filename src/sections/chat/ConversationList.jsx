@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ConversationRow from "./ConversationRow";
 import { fetchConversations, fetchMessages } from "../../app/chat/chatThunks";
 
-const ConversationList = () => {
+const ConversationList = ({ searchQuery = "" }) => {
   const dispatch = useDispatch();
 
   const conversations = useSelector((state) => state.chat.conversations || []);
@@ -15,29 +15,29 @@ const ConversationList = () => {
     dispatch(fetchConversations());
   }, [dispatch]);
 
-  // Optional: Fetch messages for all conversations when list loads
-  useEffect(() => {
-    conversations.forEach((convo) => {
-      if (!messagesByConvo[convo._id]) {
-        dispatch(fetchMessages(convo._id));
-      }
-    });
-  }, [conversations, messagesByConvo, dispatch]);
+  // Filter conversations based on search
+  const filteredConversations = conversations.filter((convo) => {
+    const otherUser = convo.participants.find((p) => p._id !== currentUserId);
+    const name = otherUser?.displayName || "Unknown";
+    return name.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
-  if (!conversations.length) {
+  if (!filteredConversations.length) {
     return (
-      <div className="flex items-center justify-center h-full text-sm text-[#74717a]">
-        No conversations
+      <div className="flex flex-col items-center justify-center h-40 text-sm text-gray-400 mt-10">
+        <p>No conversations found</p>
       </div>
     );
   }
 
   return (
-    <div className="w-[320px] border-r border-black/5 overflow-y-auto">
-      {conversations.map((convo) => {
+    // w-full ensures it fits the Sidebar container
+    <div className="w-full flex flex-col">
+      {filteredConversations.map((convo) => {
         const otherUser = convo.participants.find((p) => p._id !== currentUserId);
-
         const convoMessages = messagesByConvo[convo._id] || [];
+        
+        // Show last real message or fallback
         const lastMessage = convoMessages.length
           ? convoMessages[convoMessages.length - 1].text
           : "Tap to start chatting";

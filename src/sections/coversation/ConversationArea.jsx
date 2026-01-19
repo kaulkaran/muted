@@ -6,16 +6,10 @@ import { ChatHeader } from "./ChatHeader";
 import { fetchMessages } from "../../app/chat/chatThunks";
 import socket from "../../socket";
 
-const ConversationArea = ({ onToggleInfo, onToggleSidebar, isSidebarOpen }) => {
+const ConversationArea = ({ onToggleInfo }) => {
   const dispatch = useDispatch();
-
-  const activeConversationId = useSelector(
-    (state) => state.chat.activeConversationId
-  );
-
-  const messages = useSelector(
-    (state) => state.chat.messages[activeConversationId] || []
-  );
+  const activeConversationId = useSelector((state) => state.chat.activeConversationId);
+  const messages = useSelector((state) => state.chat.messages[activeConversationId] || []);
 
   useEffect(() => {
     if (activeConversationId) {
@@ -23,45 +17,39 @@ const ConversationArea = ({ onToggleInfo, onToggleSidebar, isSidebarOpen }) => {
     }
   }, [activeConversationId, dispatch]);
 
+  useEffect(() => {
+    if (!activeConversationId) return;
+    socket.emit("conversation:join", { conversationId: activeConversationId });
+    return () => {
+      socket.emit("conversation:leave", { conversationId: activeConversationId });
+    };
+  }, [activeConversationId]);
+
   if (!activeConversationId) {
     return (
-      <div className="h-full flex items-center justify-center text-[#74717a] bg-[#f8f7f7]">
-        Select a conversation to start chatting
+      <div className="h-full w-full flex items-center justify-center bg-[#f8f9fa] text-gray-400">
+         Select a conversation to start chatting
       </div>
     );
   }
 
-  useEffect(() => {
-  if (!activeConversationId) return;
-
-  socket.emit("conversation:join", {
-    conversationId: activeConversationId,
-  });
-
-  return () => {
-    socket.emit("conversation:leave", {
-      conversationId: activeConversationId,
-    });
-  };
-}, [activeConversationId]);
-
-
   return (
-    // ✅ FIXED: Ensured consistent background color
-    <div className="flex flex-col h-full w-full bg-[#f8f7f7] overflow-hidden">
-      <ChatHeader
-        onToggleInfo={onToggleInfo}
-        onToggleSidebar={onToggleSidebar}
-        isSidebarOpen={isSidebarOpen}
-      />
+    // Clean, plain background (No beige, no images)
+    <div className="flex flex-col h-full w-full relative bg-[#f8f9fa] overflow-hidden">
+      
+      {/* HEADER */}
+      <ChatHeader onToggleInfo={onToggleInfo} />
 
-      <div className="flex-1 overflow-y-auto">
+      {/* MESSAGES */}
+      <div className="flex-1 overflow-y-auto z-10 p-4">
         <MessageList messages={messages} />
       </div>
 
-      <div className="flex-shrink-0">
-        <MessageInput conversationId={activeConversationId} />
+      {/* INPUT */}
+      <div className="flex-shrink-0 z-10">
+        <MessageInput />
       </div>
+
     </div>
   );
 };

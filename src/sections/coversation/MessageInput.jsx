@@ -20,61 +20,65 @@ const MessageInput = () => {
       {
         conversationId: activeConversationId,
         text: text.trim(),
-        type: "text", // ✅ REQUIRED
+        type: "text", 
       },
       (ack) => {
         setIsSending(false);
-
         if (ack?.status === "ok") {
           setText("");
-        } else {
-          console.error("Message send failed:", ack?.message);
         }
       }
     );
   };
 
-  return (
-    <div className="p-4 bg-[#f8f7f7]">
-      <div className="flex items-center gap-3 bg-white p-2 pr-2 pl-6 rounded-[2rem] border border-black/5 shadow-sm">
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+    }
+  };
 
+  return (
+    // Clean White Footer with subtle top border
+    <div className="min-h-[72px] px-6 py-3 bg-white flex items-center gap-3 border-t border-black/5">
+
+      {/* Attach Button (Plus) */}
+      <button 
+        disabled={!activeConversationId}
+        className="p-2 text-[#74717a] hover:text-[rgb(var(--primary))] hover:bg-purple-50 rounded-full transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      </button>
+
+      {/* Input Field */}
+      <div className="flex-1">
         <input
           type="text"
           value={text}
           disabled={!activeConversationId}
           onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder={
-            activeConversationId
-              ? "Type a message..."
-              : "Select a conversation first"
-          }
-          className="flex-1 bg-transparent border-none outline-none text-sm text-[#141415] placeholder:text-[#74717a]"
+          onKeyDown={handleKeyDown}
+          placeholder="Type a message..."
+          className="w-full h-10 bg-gray-50 text-[#141415] placeholder:text-gray-400 rounded-xl px-4 text-sm border-none focus:ring-1 focus:ring-[rgb(var(--primary))] outline-none transition-all"
         />
-
-        <div className="flex items-center gap-1">
-          {/* Attachment Icon */}
-          <button
-            disabled={!activeConversationId}
-            className="p-2 text-[#74717a] hover:text-[rgb(var(--primary))] transition-colors disabled:opacity-50"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5 -rotate-45">
-              <path fillRule="evenodd" d="M18.97 3.659a2.25 2.25 0 0 0-3.182 0l-10.94 10.94a3.75 3.75 0 1 0 5.304 5.303l7.693-7.693a.75.75 0 0 1 1.06 1.06l-7.693 7.693a5.25 5.25 0 1 1-7.424-7.424l10.939-10.94a3.75 3.75 0 1 1 5.303 5.304L9.097 18.835Z" clipRule="evenodd" />
-            </svg>
-          </button>
-
-          {/* Send Button */}
-          <button
-            onClick={handleSend}
-            disabled={!activeConversationId || isSending || !text.trim()}
-            className="p-3 bg-[rgb(var(--primary)/0.4)] hover:bg-[rgb(var(--primary))] text-white rounded-full transition-all shadow-md active:scale-95 group disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5 translate-x-0.5 group-hover:translate-x-1 transition-transform">
-              <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
-            </svg>
-          </button>
-        </div>
       </div>
+
+      {/* Send Button */}
+      <button
+        onClick={handleSend}
+        disabled={!text.trim() || isSending}
+        className={`
+          p-2.5 rounded-full transition-all shadow-sm
+          ${text.trim() 
+             ? "bg-[rgb(var(--primary))] text-white hover:brightness-110 active:scale-95" 
+             : "bg-gray-100 text-gray-400 cursor-default"}
+        `}
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 translate-x-0.5">
+           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+        </svg>
+      </button>
+
     </div>
   );
 };
