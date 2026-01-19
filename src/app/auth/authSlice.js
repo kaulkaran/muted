@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   user: null,
-  token: localStorage.getItem("token") || null,
+  token: null,        // 🔥 do NOT read localStorage here
   loading: false,
   error: null,
 };
@@ -27,13 +27,11 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
 
-    logout(state) {
-      state.user = null;
-      state.token = null;
-      localStorage.removeItem("token");
+    logout() {
+      localStorage.removeItem("token"); // 🔥 single source of truth
+      return initialState;              // 🔥 full reset
     },
 
-    /* ✅ RESET */
     resetAuth() {
       return initialState;
     },
