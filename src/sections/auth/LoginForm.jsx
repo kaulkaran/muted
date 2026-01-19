@@ -19,7 +19,12 @@ const LoginForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(loginUser(form, navigate));
+        dispatch(loginUser(form))
+            .unwrap()
+            .then(() => {
+                navigate("/chat");
+            });
+
     };
 
 

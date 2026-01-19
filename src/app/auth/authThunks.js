@@ -2,44 +2,50 @@ import { fetchMeRequest } from "../user/userApi";
 import { loginRequest, registerRequest } from "./authApi";
 import { authStart, authSuccess, authFailure, logout } from "./authSlice";
 
-export const loginUser = (credentials, navigate) => async (dispatch) => {
+/* ================= LOGIN ================= */
+export const loginUser = (credentials) => async (dispatch) => {
   try {
     dispatch(authStart());
 
     const data = await loginRequest(credentials);
 
-    // 🔥 REQUIRED
+    // Save token
     localStorage.setItem("token", data.token);
 
+    // IMPORTANT: set user BEFORE navigation
     dispatch(authSuccess(data));
 
-    navigate("/chat");
+    // ✅ NO navigate here
+    return data; // allow component to wait
   } catch (err) {
     dispatch(authFailure(err.message));
+    throw err;
   }
 };
 
-export const registerUser = (payload, navigate) => async (dispatch) => {
+/* ================= REGISTER ================= */
+export const registerUser = (payload) => async (dispatch) => {
   try {
     dispatch(authStart());
 
     const data = await registerRequest(payload);
 
-    // 🔥 REQUIRED
     localStorage.setItem("token", data.token);
 
     dispatch(authSuccess(data));
 
-    navigate("/onboarding/name");
+    // ✅ NO navigate here
+    return data;
   } catch (err) {
     dispatch(authFailure(err.message));
+    throw err;
   }
 };
 
-
+/* ================= LOAD USER ================= */
 export const loadUser = () => async (dispatch) => {
   const token = localStorage.getItem("token");
-  if (!token) return; // 👈 prevents loading state
+  if (!token) return;
 
   try {
     dispatch(authStart());

@@ -8,7 +8,7 @@ const RegisterForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
- 
+
   const loading = useSelector((state) => state.auth.loading);
   const error = useSelector((state) => state.auth.error);
 
@@ -21,7 +21,12 @@ const RegisterForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Dispatch thunk and pass navigate for redirect
-    dispatch(registerUser(form, navigate));
+    dispatch(registerUser(form))
+      .unwrap()
+      .then(() => {
+        navigate("/chat");
+      });
+
   };
 
   return (
