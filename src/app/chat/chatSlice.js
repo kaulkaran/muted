@@ -53,12 +53,12 @@ const chatSlice = createSlice({
       state.messages[conversationId].push(message);
     },
 
-    setOnlineUsers(state, action) {
-      state.onlineUsers = {};
-      action.payload.forEach((userId) => {
-        state.onlineUsers[userId] = true;
-      });
-    },
+   setOnlineUsers(state, action) {
+  state.onlineUsers = {};
+  action.payload.forEach((userId) => {
+    state.onlineUsers[userId] = true; // ✅ This is correct
+  });
+},
 
 
     setUserOnline(state, action) {

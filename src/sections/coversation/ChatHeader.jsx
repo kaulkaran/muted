@@ -100,20 +100,19 @@ export const ChatHeader = ({ onToggleInfo }) => {
     (p) => p._id !== currentUserId
   );
 
-  // ✅ NOW it is safe
-  const isOnline =
-    !!otherUser && !!onlineUsers[otherUser?._id];
+  // ✅ Check onlineUsers object properly
+  const isOnline = otherUser ? (onlineUsers[otherUser._id] === true) : false;
 
-  console.log("OTHER USER ID:", otherUser._id.toString());
+  // Debug logs
+  console.log("OTHER USER ID:", otherUser?._id);
   console.log("ONLINE USERS:", onlineUsers);
+  console.log("IS ONLINE:", isOnline);
 
   if (!activeConversationId) return null;
 
   const handleBack = () => {
     dispatch(setActiveConversation(null));
   };
-
-
 
   const formatLastSeen = (lastSeen) => {
     if (!lastSeen) return "Offline";
@@ -133,8 +132,6 @@ export const ChatHeader = ({ onToggleInfo }) => {
       minute: "2-digit",
     })}`;
   };
-
-
 
   return (
     <header className="sticky top-0 z-50 md:static md:z-auto h-16 flex items-center justify-between px-4 md:px-6 bg-white border-b border-black/5 w-full flex-shrink-0">
@@ -159,11 +156,11 @@ export const ChatHeader = ({ onToggleInfo }) => {
               {otherUser?.displayName || "Unknown"}
             </h2>
             <span
-              className={`text-xs font-medium ${isOnline ? "text-green-500" : "text-gray-400"
-                }`}
+              className={`text-xs font-medium ${
+                isOnline ? "text-green-500" : "text-gray-400"
+              }`}
             >
               {isOnline ? "Active now" : formatLastSeen(otherUser?.lastSeen)}
-
             </span>
           </div>
         </div>
