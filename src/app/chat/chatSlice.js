@@ -62,11 +62,36 @@ const chatSlice = createSlice({
 
 
     setUserOnline(state, action) {
-      state.onlineUsers[action.payload] = true;
+      const userId = action.payload;
+
+      state.onlineUsers[userId] = true;
+
+      // optional: mark participant online
+      state.conversations.forEach((conv) => {
+        conv.participants.forEach((p) => {
+          if (p._id === userId) {
+            p.isOnline = true;
+          }
+        });
+      });
     },
+
     setUserOffline(state, action) {
-      delete state.onlineUsers[action.payload];
+      const { userId, lastSeen } = action.payload;
+
+      delete state.onlineUsers[userId];
+
+      state.conversations.forEach((conversation) => {
+        conversation.participants.forEach((p) => {
+          if (p._id === userId) {
+            p.lastSeen = lastSeen;
+            p.isOnline = false;
+          }
+        });
+      });
     },
+
+
 
 
     /* ---------- RESET ---------- */

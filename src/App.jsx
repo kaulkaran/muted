@@ -26,24 +26,28 @@ function App() {
     socket.auth = { token };
     socket.connect();
 
-     socket.on("users:online:list", ({ users }) => {
+    // initial online users
+    socket.on("users:online:list", ({ users }) => {
       dispatch(setOnlineUsers(users));
     });
 
+    // user came online
     socket.on("user:online", ({ userId }) => {
       dispatch(setUserOnline(userId));
     });
 
-    socket.on("user:offline", ({ userId }) => {
-      dispatch(setUserOffline(userId));
+    // user went offline (IMPORTANT: lastSeen)
+    socket.on("user:offline", ({ userId, lastSeen }) => {
+      dispatch(setUserOffline({ userId, lastSeen }));
     });
 
-
     return () => {
+      socket.off("users:online:list");
       socket.off("user:online");
       socket.off("user:offline");
     };
-  }, [token]);
+  }, [token, dispatch]);
+
 
   return <AllRoutes />;
 }

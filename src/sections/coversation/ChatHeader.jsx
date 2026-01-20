@@ -101,12 +101,11 @@ export const ChatHeader = ({ onToggleInfo }) => {
   );
 
   // ✅ NOW it is safe
-  const isOnline = !!(
-    otherUser && onlineUsers?.[otherUser._id.toString()]
-  );
+  const isOnline =
+    !!otherUser && !!onlineUsers[otherUser?._id];
 
-console.log("OTHER USER ID:", otherUser._id.toString());
-console.log("ONLINE USERS:", onlineUsers);
+  console.log("OTHER USER ID:", otherUser._id.toString());
+  console.log("ONLINE USERS:", onlineUsers);
 
   if (!activeConversationId) return null;
 
@@ -114,13 +113,14 @@ console.log("ONLINE USERS:", onlineUsers);
     dispatch(setActiveConversation(null));
   };
 
+
+
   const formatLastSeen = (lastSeen) => {
     if (!lastSeen) return "Offline";
 
     const last = new Date(lastSeen);
     const now = new Date();
-    const diffMs = now - last;
-    const diffMin = Math.floor(diffMs / 60000);
+    const diffMin = Math.floor((now - last) / 60000);
 
     if (diffMin < 1) return "last seen just now";
     if (diffMin < 60) return `last seen ${diffMin} min ago`;
@@ -133,6 +133,7 @@ console.log("ONLINE USERS:", onlineUsers);
       minute: "2-digit",
     })}`;
   };
+
 
 
   return (
