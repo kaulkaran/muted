@@ -4,6 +4,8 @@ import { loadUser } from "./app/auth/authThunks";
 import socket from "./socket";
 import AllRoutes from "./routes/AllRoutes";
 import useChatSocket from "./app/chat/useChatSocket";
+import { setOnlineUsers, setUserOffline, setUserOnline } from "./app/chat/chatSlice";
+
 
 function App() {
   const dispatch = useDispatch();
@@ -24,17 +26,22 @@ function App() {
     socket.auth = { token };
     socket.connect();
 
-    socket.on("connect", () => {
-      console.log("🟢 Socket connected:", socket.id);
+     socket.on("users:online:list", ({ users }) => {
+      dispatch(setOnlineUsers(users));
     });
 
-    socket.on("connect_error", (err) => {
-      console.error("🔴 Socket error:", err.message);
+    socket.on("user:online", ({ userId }) => {
+      dispatch(setUserOnline(userId));
     });
+
+    socket.on("user:offline", ({ userId }) => {
+      dispatch(setUserOffline(userId));
+    });
+
 
     return () => {
-      socket.off("connect");
-      socket.off("connect_error");
+      socket.off("user:online");
+      socket.off("user:offline");
     };
   }, [token]);
 

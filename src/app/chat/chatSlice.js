@@ -5,7 +5,7 @@ const initialState = {
   contacts: [],             // contacts list
   messages: {},             // { conversationId: [] }
   activeConversationId: null,
-
+  onlineUsers: {}, // ✅ ADD THIS
   loading: false,
   error: null,
 };
@@ -53,6 +53,22 @@ const chatSlice = createSlice({
       state.messages[conversationId].push(message);
     },
 
+    setOnlineUsers(state, action) {
+      state.onlineUsers = {};
+      action.payload.forEach((userId) => {
+        state.onlineUsers[userId] = true;
+      });
+    },
+
+
+    setUserOnline(state, action) {
+      state.onlineUsers[action.payload] = true;
+    },
+    setUserOffline(state, action) {
+      delete state.onlineUsers[action.payload];
+    },
+
+
     /* ---------- RESET ---------- */
     resetChat(state) {
       return initialState;
@@ -68,6 +84,9 @@ export const {
   addConversation,
   setMessages,
   addMessage,
+  setOnlineUsers,
+  setUserOnline,
+  setUserOffline,
   resetChat,
 } = chatSlice.actions;
 

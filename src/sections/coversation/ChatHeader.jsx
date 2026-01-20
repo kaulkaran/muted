@@ -83,37 +83,70 @@ const Header = ({
 
 
 export const ChatHeader = ({ onToggleInfo }) => {
-  const dispatch = useDispatch(); // Initialize Dispatch
-  
-  const activeConversationId = useSelector((state) => state.chat.activeConversationId);
+  const dispatch = useDispatch();
+
+  const activeConversationId = useSelector(
+    (state) => state.chat.activeConversationId
+  );
   const conversations = useSelector((state) => state.chat.conversations);
   const currentUserId = useSelector((state) => state.auth.user?._id);
+  const onlineUsers = useSelector((state) => state.chat.onlineUsers);
 
-  const conversation = conversations.find((c) => c._id === activeConversationId);
-  const otherUser = conversation?.participants.find((p) => p._id !== currentUserId);
+  const conversation = conversations.find(
+    (c) => c._id === activeConversationId
+  );
+
+  const otherUser = conversation?.participants.find(
+    (p) => p._id !== currentUserId
+  );
+
+  // ✅ NOW it is safe
+  const isOnline = !!(
+    otherUser && onlineUsers?.[otherUser._id.toString()]
+  );
+
+console.log("OTHER USER ID:", otherUser._id.toString());
+console.log("ONLINE USERS:", onlineUsers);
 
   if (!activeConversationId) return null;
 
-  // HANDLE BACK CLICK (Mobile Only)
   const handleBack = () => {
-    dispatch(setActiveConversation(null)); // Clear active chat -> ChatLayout shows Sidebar again
+    dispatch(setActiveConversation(null));
   };
+
+  const formatLastSeen = (lastSeen) => {
+    if (!lastSeen) return "Offline";
+
+    const last = new Date(lastSeen);
+    const now = new Date();
+    const diffMs = now - last;
+    const diffMin = Math.floor(diffMs / 60000);
+
+    if (diffMin < 1) return "last seen just now";
+    if (diffMin < 60) return `last seen ${diffMin} min ago`;
+
+    const diffHr = Math.floor(diffMin / 60);
+    if (diffHr < 24) return `last seen ${diffHr} hr ago`;
+
+    return `last seen ${last.toLocaleDateString()} ${last.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
+  };
+
 
   return (
     <header className="sticky top-0 z-50 md:static md:z-auto h-16 flex items-center justify-between px-4 md:px-6 bg-white border-b border-black/5 w-full flex-shrink-0">
-      
-      {/* Left Section */}
       <div className="flex items-center gap-3">
-        
-        {/* BACK BUTTON: Visible only on Mobile (md:hidden) */}
-        <button 
+        <button
           onClick={handleBack}
           className="md:hidden p-1 -ml-2 text-[#74717a] hover:bg-gray-100 rounded-full"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
         </button>
 
-        {/* User Info */}
         <div className="flex items-center gap-3 cursor-pointer" onClick={onToggleInfo}>
           <img
             src={otherUser?.avatar || "/default-avatar.png"}
@@ -124,21 +157,31 @@ export const ChatHeader = ({ onToggleInfo }) => {
             <h2 className="text-[#141415] font-bold text-sm">
               {otherUser?.displayName || "Unknown"}
             </h2>
-            <span className="text-xs text-green-500 font-medium">
-              Active now
+            <span
+              className={`text-xs font-medium ${isOnline ? "text-green-500" : "text-gray-400"
+                }`}
+            >
+              {isOnline ? "Active now" : formatLastSeen(otherUser?.lastSeen)}
+
             </span>
           </div>
         </div>
       </div>
 
-      {/* Right Icons */}
-      <button onClick={onToggleInfo} className="p-2 text-[#82708f] hover:bg-purple-50 rounded-full transition-colors">
-         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      <button
+        onClick={onToggleInfo}
+        className="p-2 text-[#82708f] hover:bg-purple-50 rounded-full transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
       </button>
-
     </header>
   );
 };
+
 
 
 
@@ -153,10 +196,10 @@ export const ContactHeader = ({ onAddContact, onSearch }) => {
 
   return (
     <header className="h-16 flex items-center justify-between px-4 md:px-6 bg-white border-b border-black/5 w-full flex-shrink-0">
-      
+
       <div className="flex items-center gap-3">
         {/* BACK BUTTON (Mobile Only) */}
-        <button 
+        <button
           onClick={() => navigate("/chat")}
           className="md:hidden p-1 -ml-2 text-[#74717a] hover:bg-gray-100 rounded-full"
         >
@@ -211,10 +254,10 @@ export const ProfileSettingsHeader = () => {
 
   return (
     <header className="h-16 flex items-center justify-between px-4 md:px-6 bg-white border-b border-black/5 w-full flex-shrink-0">
-      
+
       <div className="flex items-center gap-3">
         {/* BACK BUTTON (Mobile Only) */}
-        <button 
+        <button
           onClick={() => navigate("/chat")}
           className="md:hidden p-1 -ml-2 text-[#74717a] hover:bg-gray-100 rounded-full"
         >
