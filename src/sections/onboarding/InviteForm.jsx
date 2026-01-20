@@ -61,26 +61,25 @@ const InviteForm = ({ step, totalSteps }) => {
           </div>
 
           {/* Divider */}
-          <div className="relative flex py-1 items-center">
+          {/* <div className="relative flex py-1 items-center">
             <div className="flex-grow border-t border-black/5"></div>
             <span className="flex-shrink mx-4 text-[10px] font-bold text-[#74717a] uppercase tracking-widest">
               or
             </span>
             <div className="flex-grow border-t border-black/5"></div>
-          </div>
+          </div> */}
 
           {/* Invite Link Button (SVG added) */}
-          <button
+          {/* <button
             type="button"
             className="w-full h-12 md:h-14 rounded-2xl bg-[#f8f7f7] text-[#141415] font-bold text-sm hover:bg-black/5 transition-colors flex items-center justify-center gap-2.5 active:scale-[0.98]"
           >
-            {/* SVG Link Icon */}
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#74717a]">
               <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
               <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
             </svg>
             Generate private invite link
-          </button>
+          </button> */}
         </div>
 
         {/* Action Buttons */}
