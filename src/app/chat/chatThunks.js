@@ -19,7 +19,7 @@ export const fetchMessages = (conversationId) => async (dispatch) => {
     dispatch(
       setMessages({
         conversationId,
-        messages: res.data.reverse(),
+        messages: messages.reverse(),
       })
     );
   } catch (err) {
