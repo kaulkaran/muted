@@ -100,7 +100,7 @@ export const ChatHeader = ({ onToggleInfo }) => {
   };
 
   return (
-    <header className="h-16 flex items-center justify-between px-4 md:px-6 bg-white border-b border-black/5 w-full flex-shrink-0">
+    <header className="sticky top-0 z-50 md:static md:z-auto h-16 flex items-center justify-between px-4 md:px-6 bg-white border-b border-black/5 w-full flex-shrink-0">
       
       {/* Left Section */}
       <div className="flex items-center gap-3">
