@@ -1,7 +1,7 @@
 import API from "../axios";
 
 export const fetchMessagesRequest = async (conversationId) => {
-  const res = await API.get(`/messages/${conversationId}`);
+  const res = await API.get(`/messages/${conversationId}?limit=10000`);
   return res.data;
 };
 
