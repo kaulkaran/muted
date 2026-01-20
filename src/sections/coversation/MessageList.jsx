@@ -7,7 +7,8 @@ const MessageList = ({ messages = [] }) => {
   const currentUserId = useSelector((state) => state.auth.user?._id);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    // ✅ Use 'auto' instead of 'smooth' to jump instantly without scrolling animation
+    bottomRef.current?.scrollIntoView({ behavior: "auto" });
   }, [messages.length]);
 
   return (
@@ -39,6 +40,5 @@ const MessageList = ({ messages = [] }) => {
     </div>
   );
 };
-
 
 export default MessageList;
