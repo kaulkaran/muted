@@ -1,11 +1,14 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import FullScreenLoader from "../components/common/FullScreenLoader";
 
-export default function RedirectIfAuthed({ children }) {
-  const { token, initialized } = useSelector((s) => s.auth);
+const RedirectIfAuthed = ({ children }) => {
+  const { token, initialized } = useSelector((state) => state.auth);
 
-  if (!initialized) return null;
+  if (!initialized) return <FullScreenLoader />;  // ✅ loader instead of null
   if (token) return <Navigate to="/chat" replace />;
 
   return children;
-}
+};
+
+export default RedirectIfAuthed;
