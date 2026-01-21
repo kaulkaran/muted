@@ -1,6 +1,6 @@
 import { fetchMeRequest } from "../user/userApi";
 import { loginRequest, registerRequest } from "./authApi";
-import { authStart, authSuccess, authFailure, logout } from "./authSlice";
+import { authStart, authSuccess, authFailure, logout, setInitialized  } from "./authSlice";
 
 // ✅ LOGIN
 export const loginUser = (credentials, navigate) => async (dispatch) => {
