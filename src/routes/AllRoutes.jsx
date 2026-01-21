@@ -14,19 +14,26 @@ const AllRoutes = () => {
     <Routes>
       {/* Public routes */}
       {routes.map(({ path, element }) => {
-        const wrappedElement =
-          path === "/" || path === "/login" || path === "/register"
-            ? <RedirectIfAuthed>{element}</RedirectIfAuthed>
-            : element;
+        const shouldRedirectIfAuthed =
+          path === "/" || path === "/login" || path === "/register";
+
+        const page = <PageWrapper>{element}</PageWrapper>;
 
         return (
           <Route
             key={path}
             path={path}
-            element={<PageWrapper>{wrappedElement}</PageWrapper>}
+            element={
+              shouldRedirectIfAuthed ? (
+                <RedirectIfAuthed>{page}</RedirectIfAuthed>
+              ) : (
+                page
+              )
+            }
           />
         );
       })}
+
 
 
       {/* Protected Chat Routes */}
