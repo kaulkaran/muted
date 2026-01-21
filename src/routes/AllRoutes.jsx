@@ -7,6 +7,7 @@ import ContactsPage from "../pages/Chat/ContactsPage";
 import FilesPage from "../pages/Chat/FilesPage";
 import ProtectedRoute from "./ProtectedRoute";
 import ProfileSettings from "../pages/Settings/ProfileSettings";
+import RedirectIfAuthed from "./RedirectIfAuthed";
 
 const AllRoutes = () => {
   return (
