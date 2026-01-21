@@ -5,7 +5,7 @@ const initialState = {
   token: localStorage.getItem("token") || null,
   loading: false,
   error: null,
-  initialized: false, // ✅ NEW
+  initialized: true, // ✅ NEW
 };
 
 const authSlice = createSlice({
@@ -63,9 +63,14 @@ const authSlice = createSlice({
     },
 
     /* ✅ RESET */
-   resetAuth() {
-      return { ...initialState, token: localStorage.getItem("token") || null };
-    },
+  resetAuth() {
+  return {
+    ...initialState,
+    token: localStorage.getItem("token") || null,
+    initialized: true, // ✅ important
+  };
+}
+
   },
 });
 
