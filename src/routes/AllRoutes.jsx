@@ -12,13 +12,21 @@ const AllRoutes = () => {
   return (
     <Routes>
       {/* Public routes */}
-      {routes.map(({ path, element }) => (
-        <Route
-          key={path}
-          path={path}
-          element={<PageWrapper>{element}</PageWrapper>}
-        />
-      ))}
+      {routes.map(({ path, element }) => {
+        const wrappedElement =
+          path === "/" || path === "/login" || path === "/register"
+            ? <RedirectIfAuthed>{element}</RedirectIfAuthed>
+            : element;
+
+        return (
+          <Route
+            key={path}
+            path={path}
+            element={<PageWrapper>{wrappedElement}</PageWrapper>}
+          />
+        );
+      })}
+
 
       {/* Protected Chat Routes */}
       <Route element={<ProtectedRoute />}>
