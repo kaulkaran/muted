@@ -5,6 +5,7 @@ import socket from "./socket";
 import AllRoutes from "./routes/AllRoutes";
 import useChatSocket from "./app/chat/useChatSocket";
 import { setOnlineUsers, setUserOffline, setUserOnline } from "./app/chat/chatSlice";
+import AuthGate from "./routes/AuthGate";
 
 
 function App() {
@@ -50,7 +51,9 @@ function App() {
   }, [token, dispatch]);
 
 
-  return <AllRoutes />;
+  return <AuthGate>
+      <AllRoutes />
+    </AuthGate>;
 }
 
 export default App;
