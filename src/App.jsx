@@ -45,6 +45,7 @@ function App() {
       socket.off("users:online:list");
       socket.off("user:online");
       socket.off("user:offline");
+      socket.disconnect(); // ✅ add
     };
   }, [token, dispatch]);
 
