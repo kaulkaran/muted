@@ -7,11 +7,11 @@ const RedirectIfAuthed = ({ children }) => {
 
   if (!initialized) return <FullScreenLoader />;
 
-  // ✅ token exists but user not loaded yet → wait
-  if (token && !user) return <FullScreenLoader />;
-
   if (token) {
-    if (!user.onboardingComplete) return <Navigate to="/onboarding/name" replace />;
+    // ✅ if onboarding not complete, go onboarding
+    if (!user?.onboardingComplete) {
+      return <Navigate to="/onboarding/name" replace />;
+    }
     return <Navigate to="/chat" replace />;
   }
 
