@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const socket = io("https://mute-backend-ggxq.onrender.com", {
+const socket = io("http://localhost:5000", {
   autoConnect: false,
   transports: ["websocket"],
 });

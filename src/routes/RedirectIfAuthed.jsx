@@ -3,10 +3,17 @@ import { Navigate } from "react-router-dom";
 import FullScreenLoader from "../components/common/FullScreenLoader";
 
 const RedirectIfAuthed = ({ children }) => {
-  const { token, initialized } = useSelector((state) => state.auth);
+  const { token, initialized, user } = useSelector((state) => state.auth);
 
-  if (!initialized) return <FullScreenLoader />;  // ✅ loader instead of null
-  if (token) return <Navigate to="/chat" replace />;
+  if (!initialized) return <FullScreenLoader />;
+
+  // ✅ token exists but user not loaded yet → wait
+  if (token && !user) return <FullScreenLoader />;
+
+  if (token) {
+    if (!user.onboardingComplete) return <Navigate to="/onboarding/name" replace />;
+    return <Navigate to="/chat" replace />;
+  }
 
   return children;
 };

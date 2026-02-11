@@ -1,20 +1,26 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import socket from "../../socket";
-import { addMessage } from "./chatSlice";
+import { upsertMessage } from "./chatSlice";
 
 const useChatSocket = () => {
   const dispatch = useDispatch();
-  const activeConversationId = useSelector(
-    (state) => state.chat.activeConversationId
-  );
 
   useEffect(() => {
-    // ✅ Only put conditional logic inside useEffect
     const handleNewMessage = (message) => {
+      // message.conversation might be ObjectId or populated object
+      const conversationId =
+        typeof message.conversation === "string"
+          ? message.conversation
+          : message.conversation?._id;
+
+      if (!conversationId) return;
+
+      console.log("📩 message:new received:", message);
+
       dispatch(
-        addMessage({
-          conversationId: message.conversation,
+        upsertMessage({
+          conversationId,
           message,
         })
       );
@@ -25,9 +31,7 @@ const useChatSocket = () => {
     return () => {
       socket.off("message:new", handleNewMessage);
     };
-  }, [dispatch]); // NOTE: do NOT include anything that can be undefined/unmounted
-
-  // Optional: listen to typing, delivered, etc. here as well
+  }, [dispatch]);
 };
 
 export default useChatSocket;

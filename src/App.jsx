@@ -7,7 +7,6 @@ import useChatSocket from "./app/chat/useChatSocket";
 import { setOnlineUsers, setUserOffline, setUserOnline } from "./app/chat/chatSlice";
 import AuthGate from "./routes/AuthGate";
 
-
 function App() {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
@@ -27,33 +26,27 @@ function App() {
     socket.auth = { token };
     socket.connect();
 
-    // initial online users
-    socket.on("users:online:list", ({ users }) => {
-      dispatch(setOnlineUsers(users));
-    });
+    const onOnlineList = ({ users }) => dispatch(setOnlineUsers(users));
+    const onUserOnline = ({ userId }) => dispatch(setUserOnline(userId));
+    const onUserOffline = ({ userId, lastSeen }) => dispatch(setUserOffline({ userId, lastSeen }));
 
-    // user came online
-    socket.on("user:online", ({ userId }) => {
-      dispatch(setUserOnline(userId));
-    });
-
-    // user went offline (IMPORTANT: lastSeen)
-    socket.on("user:offline", ({ userId, lastSeen }) => {
-      dispatch(setUserOffline({ userId, lastSeen }));
-    });
+    socket.on("users:online:list", onOnlineList);
+    socket.on("user:online", onUserOnline);
+    socket.on("user:offline", onUserOffline);
 
     return () => {
-      socket.off("users:online:list");
-      socket.off("user:online");
-      socket.off("user:offline");
-      socket.disconnect(); // ✅ add
+      socket.off("users:online:list", onOnlineList);
+      socket.off("user:online", onUserOnline);
+      socket.off("user:offline", onUserOffline);
+      socket.disconnect();
     };
   }, [token, dispatch]);
 
-
-  return <AuthGate>
+  return (
+    <AuthGate>
       <AllRoutes />
-    </AuthGate>;
+    </AuthGate>
+  );
 }
 
 export default App;

@@ -11,11 +11,13 @@ const ConversationArea = ({ onToggleInfo }) => {
   const activeConversationId = useSelector((state) => state.chat.activeConversationId);
   const messages = useSelector((state) => state.chat.messages[activeConversationId] || []);
 
+  const hasMessages = useSelector((state) => !!state.chat.messages[activeConversationId]);
+
   useEffect(() => {
-    if (activeConversationId) {
+    if (activeConversationId && !hasMessages) {
       dispatch(fetchMessages(activeConversationId));
     }
-  }, [activeConversationId, dispatch]);
+  }, [activeConversationId, hasMessages, dispatch]);
 
   useEffect(() => {
     if (!activeConversationId) return;
@@ -26,17 +28,12 @@ const ConversationArea = ({ onToggleInfo }) => {
   }, [activeConversationId]);
 
   if (!activeConversationId) {
-    return (
-      <div className="h-full w-full flex items-center justify-center bg-[#f8f9fa] text-gray-400">
-         Select a conversation to start chatting
-      </div>
-    );
+    return <div className="h-full w-full flex items-center justify-center bg-[#f8f9fa] text-gray-400">Select a conversation to start chatting</div>;
   }
 
   return (
     // Clean, plain background (No beige, no images)
     <div className="flex flex-col h-full w-full relative bg-[#f8f9fa] overflow-hidden">
-      
       {/* HEADER */}
       <ChatHeader onToggleInfo={onToggleInfo} />
 
@@ -49,7 +46,6 @@ const ConversationArea = ({ onToggleInfo }) => {
       <div className="flex-shrink-0 z-10">
         <MessageInput />
       </div>
-
     </div>
   );
 };
