@@ -3,41 +3,55 @@ import { fetchMessagesRequest, sendMessageRequest } from "../messages/messagesAp
 import { addMessage, setConversations, setMessages } from "./chatSlice";
 import { setMedia, addMedia } from "../media/mediaSlice";
 
-
 /* FETCH CONVERSATIONS */
 export const fetchConversations = () => async (dispatch) => {
   try {
     const conversations = await fetchConversationsRequest();
     dispatch(setConversations(conversations));
   } catch (err) {
-    console.error(err.message);
+    console.error(err?.message || err);
   }
 };
 
+/* FETCH MESSAGES + SYNC MEDIA PANEL */
 export const fetchMessages = (conversationId) => async (dispatch) => {
-  const messages = await fetchMessagesRequest(conversationId);
+  try {
+    // ✅ clear previous convo media immediately (prevents showing old convo media)
+    dispatch(setMedia([]));
 
-  dispatch(setMessages({ conversationId, messages }));
+    const messages = await fetchMessagesRequest(conversationId);
+    dispatch(setMessages({ conversationId, messages }));
 
-  // ✅ collect media from messages and send to Info panel
-  const mediaList = messages
-    .map((m) => m.media)         // requires backend populate
-    .filter(Boolean);
+    // ✅ collect populated media objects from messages
+    // backend returns message.media populated (object) OR null
+    const mediaObjects = (messages || [])
+      .map((m) => m?.media)
+      .filter((m) => m && typeof m === "object" && m._id);
 
-  // Optional: remove duplicates
-  const unique = Array.from(new Map(mediaList.map((m) => [m._id, m])).values());
+    // ✅ de-dupe by _id
+    const unique = Array.from(
+      new Map(mediaObjects.map((m) => [m._id.toString(), m])).values()
+    );
 
-  dispatch(setMedia(unique));
+    dispatch(setMedia(unique));
+  } catch (err) {
+    console.error(err?.message || err);
+    dispatch(setMedia([]));
+  }
 };
 
-
+/* SEND MESSAGE + PUSH MEDIA INTO PANEL IMMEDIATELY */
 export const sendMessage = ({ conversationId, text, mediaId }) => async (dispatch) => {
-  const message = await sendMessageRequest({ conversationId, text, mediaId });
+  try {
+    const message = await sendMessageRequest({ conversationId, text, mediaId });
 
-  dispatch(addMessage({ conversationId, message }));
+    dispatch(addMessage({ conversationId, message }));
 
-  // ✅ if message contains populated media, add it to info panel
-  if (message?.media) {
-    dispatch(addMedia(message.media));
+    // ✅ if message contains populated media object, add it to the Info Panel
+    if (message?.media && typeof message.media === "object" && message.media._id) {
+      dispatch(addMedia(message.media));
+    }
+  } catch (err) {
+    console.error(err?.message || err);
   }
 };
