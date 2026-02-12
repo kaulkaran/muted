@@ -1,5 +1,6 @@
 import API from "../axios";
-import { fetchConversations } from "../chat/chatThunks";
+import { setActiveConversation } from "../chat/chatSlice";
+import { fetchConversations, fetchMessages } from "../chat/chatThunks";
 import {
   fetchContactsRequest,
   fetchPendingInvitesRequest,
@@ -7,6 +8,7 @@ import {
   acceptInviteRequest,
   findUserByEmailRequest
 } from "./contactsApi";
+
 
 import {
   setContacts,
@@ -71,17 +73,25 @@ export const inviteByEmail = (email) => async (dispatch) => {
 
 /* ACCEPT INVITE */
 
-export const acceptInvite = (connectionId) => async (dispatch) => {
+export const acceptInvite = (connectionId, navigate) => async (dispatch) => {
   try {
-    const { connection, conversation } =
-      await acceptInviteRequest(connectionId);
+    const { connection, conversation } = await acceptInviteRequest(connectionId);
 
+    // ✅ update contacts UI immediately
     dispatch(addContact(connection));
 
-    // 🔥 THIS IS MISSING
+    // ✅ update conversations list immediately (sidebar etc.)
     dispatch(fetchConversations());
 
+    // ✅ open the chat immediately
+    const convoId = conversation?._id || connection?.conversationId;
+    if (convoId) {
+      dispatch(setActiveConversation(convoId));
+      // optional: preload messages so chat renders instantly
+      dispatch(fetchMessages(convoId));
+      navigate("/chat", { replace: true });
+    }
   } catch (err) {
-    console.error(err.message);
+    console.error(err?.message || err);
   }
 };

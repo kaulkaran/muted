@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { fetchPendingInvites, acceptInvite } from "../../app/contacts/contactsThunk";
 
 const PendingInvites = () => {
   const dispatch = useDispatch();
-  const pendingInvites = useSelector(
-    (state) => state.contacts.pendingInvites
-  );
+  const navigate = useNavigate();
+
+  const pendingInvites = useSelector((state) => state.contacts.pendingInvites);
 
   useEffect(() => {
     dispatch(fetchPendingInvites());
@@ -39,7 +40,7 @@ const PendingInvites = () => {
               </div>
 
               <button
-                onClick={() => dispatch(acceptInvite(invite._id))}
+                onClick={() => dispatch(acceptInvite(invite._id, navigate))}
                 className="px-4 h-9 rounded-full bg-[rgb(var(--primary))] text-white text-sm font-semibold hover:brightness-110 transition"
               >
                 Accept
