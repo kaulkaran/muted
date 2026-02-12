@@ -16,19 +16,20 @@ export const fetchConversations = () => async (dispatch) => {
 /* FETCH MESSAGES + SYNC MEDIA PANEL */
 export const fetchMessages = (conversationId) => async (dispatch) => {
   try {
-    // ✅ clear previous convo media immediately (prevents showing old convo media)
     dispatch(setMedia([]));
 
     const messages = await fetchMessagesRequest(conversationId);
-    dispatch(setMessages({ conversationId, messages }));
 
-    // ✅ collect populated media objects from messages
-    // backend returns message.media populated (object) OR null
-    const mediaObjects = (messages || [])
+    // ✅ backend returns newest-first, UI needs oldest-first
+    const ordered = Array.isArray(messages) ? [...messages].reverse() : [];
+
+    dispatch(setMessages({ conversationId, messages: ordered }));
+
+    // ✅ media extraction should use ordered (same set)
+    const mediaObjects = ordered
       .map((m) => m?.media)
       .filter((m) => m && typeof m === "object" && m._id);
 
-    // ✅ de-dupe by _id
     const unique = Array.from(
       new Map(mediaObjects.map((m) => [m._id.toString(), m])).values()
     );
@@ -39,6 +40,7 @@ export const fetchMessages = (conversationId) => async (dispatch) => {
     dispatch(setMedia([]));
   }
 };
+
 
 /* SEND MESSAGE + PUSH MEDIA INTO PANEL IMMEDIATELY */
 export const sendMessage = ({ conversationId, text, mediaId }) => async (dispatch) => {
