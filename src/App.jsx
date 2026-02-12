@@ -6,20 +6,20 @@ import AllRoutes from "./routes/AllRoutes";
 import useChatSocket from "./app/chat/useChatSocket";
 import { setOnlineUsers, setUserOffline, setUserOnline } from "./app/chat/chatSlice";
 import AuthGate from "./routes/AuthGate";
+import useContactsSocket from "./app/contacts/useContactsSocket";
 
 function App() {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
 
-  // ✅ HOOK MUST BE CALLED HERE (TOP LEVEL)
+  // ✅ hooks at top level
   useChatSocket();
+  useContactsSocket(); // ✅ ADD THIS
 
-  // 1️⃣ Restore user on refresh
   useEffect(() => {
     dispatch(loadUser());
   }, [dispatch]);
 
-  // 2️⃣ Connect socket AFTER token exists
   useEffect(() => {
     if (!token) return;
 
@@ -28,7 +28,8 @@ function App() {
 
     const onOnlineList = ({ users }) => dispatch(setOnlineUsers(users));
     const onUserOnline = ({ userId }) => dispatch(setUserOnline(userId));
-    const onUserOffline = ({ userId, lastSeen }) => dispatch(setUserOffline({ userId, lastSeen }));
+    const onUserOffline = ({ userId, lastSeen }) =>
+      dispatch(setUserOffline({ userId, lastSeen }));
 
     socket.on("users:online:list", onOnlineList);
     socket.on("user:online", onUserOnline);
