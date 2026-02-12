@@ -3,6 +3,7 @@ import uiReducer from "./ui/uiSlice";
 import authReducer from "./auth/authSlice";
 import chatReducer from "./chat/chatSlice";
 import contactsReducer from "./contacts/contactsSlice"
+import mediaReducer from "./media/mediaSlice"
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     auth: authReducer,
     chat: chatReducer,
     contacts: contactsReducer,
+     media: mediaReducer, // ✅ ADD
   },
 });

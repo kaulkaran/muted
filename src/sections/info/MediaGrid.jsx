@@ -1,15 +1,23 @@
 import React from "react";
 import MediaItem from "./MediaItem";
+import { useSelector } from "react-redux";
 
 const MediaGrid = () => {
+  const mediaItems = useSelector((state) => state.media.items);
+
+  if (!mediaItems.length) {
+    return <div className="text-white/50 text-sm mt-6">No media yet. Upload your first file 🚀</div>;
+  }
+
   return (
-    <div className="grid grid-cols-2 gap-3 overflow-y-auto pr-1 pb-4 scrollbar-hide">
-      <MediaItem large={true} src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop" />
-      <MediaItem src="https://images.unsplash.com/photo-1519076976366-0a0684df6445?q=80&w=400&auto=format&fit=crop" />
-      <MediaItem src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=400&auto=format&fit=crop" />
-      <MediaItem src="https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=400&auto=format&fit=crop" />
-      <MediaItem src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=400&auto=format&fit=crop" />
-      <MediaItem large={true} src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=800&auto=format&fit=crop" />
+    <div className="grid grid-cols-2 gap-3 pr-1 pb-4">
+      {mediaItems.map((item, i) => (
+        <MediaItem
+          key={item._id}
+          src={item.url} // backend should return url
+          large={i % 5 === 0}
+        />
+      ))}
     </div>
   );
 };

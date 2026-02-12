@@ -1,4 +1,3 @@
-import React from "react";
 
 const MediaItem = ({ src, large }) => {
   return (
