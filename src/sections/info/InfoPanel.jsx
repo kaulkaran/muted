@@ -3,7 +3,7 @@ import React, { useRef } from "react";
 import InfoTabs from "./InfoTabs";
 import MediaGrid from "./MediaGrid";
 import { useDispatch, useSelector } from "react-redux";
-import { uploadMediaAndSend } from "../../app/media/mediaThunks"; // ✅ use this thunk
+import { uploadMediaAndSend } from "../../app/media/mediasThunk";
 
 const InfoPanel = ({ onClose }) => {
   const dispatch = useDispatch();
