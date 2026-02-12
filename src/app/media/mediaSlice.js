@@ -17,9 +17,11 @@ const mediaSlice = createSlice({
       const media = action.payload;
       if (!media?._id) return;
 
-      const exists = state.items.some((m) => m._id === media._id);
+      const exists = state.items.some((m) => m?._id?.toString() === media?._id?.toString());
+
       if (!exists) state.items.unshift(media);
     },
+
     addManyMedia(state, action) {
       const incoming = action.payload || [];
       const existingIds = new Set(state.items.map((m) => m._id));
