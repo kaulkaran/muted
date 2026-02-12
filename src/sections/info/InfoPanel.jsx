@@ -1,31 +1,26 @@
+// InfoPanel.jsx
 import React, { useRef } from "react";
 import InfoTabs from "./InfoTabs";
 import MediaGrid from "./MediaGrid";
 import { useDispatch } from "react-redux";
-import { uploadMedia } from "../../app/media/mediaThunks.JS";
+import { uploadMedia } from "../../app/media/mediaThunks"; // ✅ fixed
 
 const InfoPanel = ({ onClose }) => {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
 
-  const handleOpenPicker = () => {
-    fileInputRef.current?.click();
-  };
+  const handleOpenPicker = () => fileInputRef.current?.click();
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     dispatch(uploadMedia(file));
-
-    // ✅ allow re-uploading the same file again
     e.target.value = "";
   };
 
   return (
     <aside className="w-full h-full bg-[#18181b] text-white flex flex-col border-l border-white/5">
-      
-      {/* ✅ Hidden input (doesn't affect your CSS) */}
       <input
         ref={fileInputRef}
         type="file"
@@ -50,7 +45,7 @@ const InfoPanel = ({ onClose }) => {
       <div className="px-6">
         <InfoTabs />
       </div>
-      
+
       <div className="px-6 flex-1 overflow-y-auto scrollbar-hide">
         <MediaGrid />
       </div>
@@ -58,7 +53,7 @@ const InfoPanel = ({ onClose }) => {
       {/* Footer Action */}
       <div className="p-6 mt-auto">
         <button
-          onClick={handleOpenPicker} // ✅ binding added
+          onClick={handleOpenPicker}
           className="w-full h-12 rounded-[14px] bg-[rgb(var(--primary))] hover:brightness-110 text-white font-bold text-sm tracking-wide transition-all shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5">
